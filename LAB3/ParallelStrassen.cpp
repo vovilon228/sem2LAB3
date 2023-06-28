@@ -1,8 +1,5 @@
 #include "ParallelStrassen.h"
-/// @brief Performs parallel matrix multiplication using the Strassen algorithm.
-    /// @param a The first input matrix.
-    /// @param b The second input matrix.
-    /// @return Pointer to the resulting matrix.
+
 ComplexMatrix* ParallelStrassen::parallelMultiply(ComplexMatrix* a, ComplexMatrix* b) {
     assert(a->getColumns() == b->getRows());
     int n = a->getColumns();
@@ -14,13 +11,7 @@ ComplexMatrix* ParallelStrassen::parallelMultiply(ComplexMatrix* a, ComplexMatri
 
     return result;
 }
-/// @brief Performs the recursive step of the Strassen algorithm.
-/// @param a The first input matrix.
-/// @param b The second input matrix.
-/// @param result The resulting matrix.
-/// @param n The size of the input matrices (power of 2).
-/// @param m The row offset for matrix a.
-/// @param q The column offset for matrix b.
+
 void ParallelStrassen::strassenRecursion(ComplexMatrix* a, ComplexMatrix* b, ComplexMatrix* result, int n, int m, int q) {
     if (n <= 8 || m <= 8 || q <= 8) {
         ParallelStrassen::multiplyBlock(a, b, result, 0, 0, 0, n);
@@ -114,13 +105,7 @@ void ParallelStrassen::strassenRecursion(ComplexMatrix* a, ComplexMatrix* b, Com
         }
     }
 }
-/// @brief Performs the parallel implementation of the Strassen algorithm.
-/// @param a The first input matrix.
-/// @param b The second input matrix.
-/// @param result The resulting matrix.
-/// @param n The size of the input matrices (power of 2).
-/// @param m The row offset for matrix a.
-/// @param q The column offset for matrix b.
+
 void ParallelStrassen::parallelStrassen(ComplexMatrix* a, ComplexMatrix* b, ComplexMatrix* result, int n, int m, int q) {
     int blockSize = 256;
     int numThreads = std::thread::hardware_concurrency();
@@ -155,14 +140,7 @@ void ParallelStrassen::parallelStrassen(ComplexMatrix* a, ComplexMatrix* b, Comp
     }
 }
 
-/// @brief Multiplies a block of matrices using the standard matrix multiplication algorithm.
-/// @param a The first input matrix.
-/// @param b The second input matrix.
-/// @param result The resulting matrix.
-/// @param rowA The starting row index for matrix a.
-/// @param colA The starting column index for matrix a.
-/// @param colB The starting column index for matrix b.
-/// @param blockSize The size of the block.
+
 void ParallelStrassen::multiplyBlock(ComplexMatrix* a, ComplexMatrix* b, ComplexMatrix* result, int rowA, int colA, int colB, int blockSize) {
     for (int i = 0; i < blockSize; i++) {
         for (int j = 0; j < blockSize; j++) {
@@ -174,15 +152,7 @@ void ParallelStrassen::multiplyBlock(ComplexMatrix* a, ComplexMatrix* b, Complex
         }
     }
 }
-/// @brief Adds a block of matrices element-wise.
-/// @param a The first input matrix.
-/// @param b The second input matrix.
-/// @param result The resulting matrix.
-/// @param rowA The starting row index for matrix a.
-/// @param colA The starting column index for matrix a.
-/// @param rowB The starting row index for matrix b.
-/// @param colB The starting column index for matrix b.
-/// @param blockSize The size of the block.
+
 void ParallelStrassen::addBlock(ComplexMatrix* a, ComplexMatrix* b, ComplexMatrix* result, int rowA, int colA, int rowB, int colB, int blockSize) {
     for (int i = 0; i < blockSize; i++) {
         for (int j = 0; j < blockSize; j++) {
@@ -191,15 +161,7 @@ void ParallelStrassen::addBlock(ComplexMatrix* a, ComplexMatrix* b, ComplexMatri
     }
 }
 
-/// @brief Subtracts a block of matrices element-wise.
-/// @param a The first input matrix.
-/// @param b The second input matrix.
-/// @param result The resulting matrix.
-/// @param rowA The starting row index for matrix a.
-/// @param colA The starting column index for matrix a.
-/// @param rowB The starting row index for matrix b.
-/// @param colB The starting column index for matrix b.
-/// @param blockSize The size of the block.
+
 void ParallelStrassen::subtractBlock(ComplexMatrix* a, ComplexMatrix* b, ComplexMatrix* result, int rowA, int colA, int rowB, int colB, int blockSize) {
     for (int i = 0; i < blockSize; i++) {
         for (int j = 0; j < blockSize; j++) {
