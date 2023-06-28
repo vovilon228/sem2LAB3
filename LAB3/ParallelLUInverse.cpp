@@ -1,10 +1,5 @@
 #include "ParallelLUInverse.h"
 #include <mutex>
-/// @brief Performs LU decomposition of the input matrix in parallel.
-/// @param a The input matrix to decompose.
-/// @param l The lower triangular matrix (output).
-/// @param u The upper triangular matrix (output).
-/// @return True if the decomposition is successful, false otherwise.
 bool ParallelLUInverse::parallelLUDecomposition(ComplexMatrix inputMatrix, ComplexMatrix& l, ComplexMatrix& u)
 {
     if (inputMatrix.getColumns() != inputMatrix.getRows())
@@ -43,7 +38,7 @@ bool ParallelLUInverse::parallelLUDecomposition(ComplexMatrix inputMatrix, Compl
                     for (int k = 0; k <= row - 1; k++)
                         toAdd = toAdd - (l.get(row, k) * u.get(k, j));
 
-                    // Блокування м'ютексу перед зміною значення у l
+ 
                     lMutexes[row * size + j].lock();
                     u.set(row, j, toAdd);
                     lMutexes[row * size + j].unlock();
@@ -57,12 +52,11 @@ bool ParallelLUInverse::parallelLUDecomposition(ComplexMatrix inputMatrix, Compl
                     for (int k = 0; k <= j - 1; k++)
                         toAdd = toAdd - (l.get(row, k) * u.get(k, j));
 
-                    // Блокування м'ютексу перед зміною значення у u
+
                     uMutexes[row * size + j].lock();
                     toAdd = toAdd / divider;
                     uMutexes[row * size + j].unlock();
 
-                    // Блокування м'ютексу перед зміною значення у l
                     lMutexes[row * size + j].lock();
                     l.set(row, j, toAdd);
                     lMutexes[row * size + j].unlock();
@@ -77,9 +71,7 @@ bool ParallelLUInverse::parallelLUDecomposition(ComplexMatrix inputMatrix, Compl
 
     return true;
 }
-/// @brief Creates an empty complex number array of size n.
-/// @param n The size of the array.
-/// @return Pointer to the created array.
+
 ComplexNum* ParallelLUInverse::createEmpty(int size)
 {
     ComplexNum* result = new ComplexNum[size];
@@ -87,11 +79,7 @@ ComplexNum* ParallelLUInverse::createEmpty(int size)
         result[i] = ComplexNum();
     return result;
 }
-/// @brief Performs forward substitution for solving a system of equations with a lower triangular matrix.
-/// @param l The lower triangular matrix.
-/// @param vector The input vector.
-/// @param n The size of the matrix and vector.
-/// @return Pointer to the solution vector.
+
 ComplexNum* ParallelLUInverse::forwardSubstitution(ComplexMatrix l, ComplexNum* vector, int size)
 {
     ComplexNum* result = new ComplexNum[size];
@@ -105,11 +93,7 @@ ComplexNum* ParallelLUInverse::forwardSubstitution(ComplexMatrix l, ComplexNum* 
     }
     return result;
 }
-/// @brief Performs back substitution for solving a system of equations with an upper triangular matrix.
-/// @param u The upper triangular matrix.
-/// @param vector The input vector.
-/// @param n The size of the matrix and vector.
-/// @return Pointer to the solution vector.
+
 ComplexNum* ParallelLUInverse::backSubstitution(ComplexMatrix u, ComplexNum* vector, int size)
 {
     ComplexNum* result = new ComplexNum[size];
@@ -123,9 +107,7 @@ ComplexNum* ParallelLUInverse::backSubstitution(ComplexMatrix u, ComplexNum* vec
     }
     return result;
 }
-/// @brief Calculates the inverse of the input matrix using LU decomposition in parallel.
-/// @param a The input matrix.
-/// @return The calculated inverse matrix.
+
 ComplexMatrix ParallelLUInverse::calculateParallelLUInverse(ComplexMatrix inputMatrix)
 {
     ComplexMatrix l(0, 0);
